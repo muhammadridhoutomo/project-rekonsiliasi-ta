@@ -278,32 +278,59 @@ def get_daftar_coa() -> List[Dict[str, Any]]:
     """
     Mengambil daftar lengkap Bagan Akun (Chart of Accounts / CoA) dari sistem ERP perusahaan
     untuk ditampilkan di UI saat user melakukan pencocokan manual (Not Found / Suggestion).
+
+    Sumber data (prioritas):
+      1. Tabel coa_master di Supabase (diimpor dari CoA.xlsx mitra)
+      2. Fallback: file CoA.xlsx lokal (untuk development)
+      3. Tambahan dari tree_nodes kategori yang belum ada di master
     """
     daftar = []
     seen = set()
 
-    # 1. Baca dari file CoA.xlsx mitra (akun posting)
-    try:
-        if COA_PATH.exists():
-            df = load_coa()
-            for _, row in df.iterrows():
-                if row.get("is_posting"):
-                    kode = str(row["kode"]).strip()
-                    nama = str(row["nama"]).strip()
-                    if kode and kode not in seen:
-                        seen.add(kode)
-                        daftar.append({
-                            "kode": kode,
-                            "nama": nama,
-                            "label": f"{kode} - {nama}",
-                            "account_type": str(row.get("account_type", "")).strip(),
-                        })
-    except Exception as e:
-        print(f"Notice load_coa: {e}")
+    sb = get_supabase()
 
-    # 2. Tambahkan dari tree_nodes kategori di Supabase jika belum ada
+    # 1. Baca dari tabel coa_master di Supabase (sumber utama production)
     try:
-        sb = get_supabase()
+        res = sb.table("coa_master").select("kode, nama, account_type") \
+            .eq("is_posting", True) \
+            .order("kode") \
+            .execute()
+        for row in res.data:
+            kode = row["kode"].strip()
+            nama = row["nama"].strip()
+            if kode and kode not in seen:
+                seen.add(kode)
+                daftar.append({
+                    "kode": kode,
+                    "nama": nama,
+                    "label": f"{kode} - {nama}",
+                    "account_type": row.get("account_type", ""),
+                })
+    except Exception:
+        pass
+
+    # 2. Fallback: file CoA.xlsx lokal (development / jika coa_master kosong)
+    if not daftar:
+        try:
+            if COA_PATH.exists():
+                df = load_coa()
+                for _, row in df.iterrows():
+                    if row.get("is_posting"):
+                        kode = str(row["kode"]).strip()
+                        nama = str(row["nama"]).strip()
+                        if kode and kode not in seen:
+                            seen.add(kode)
+                            daftar.append({
+                                "kode": kode,
+                                "nama": nama,
+                                "label": f"{kode} - {nama}",
+                                "account_type": str(row.get("account_type", "")).strip(),
+                            })
+        except Exception as e:
+            print(f"Notice load_coa: {e}")
+
+    # 3. Tambahkan dari tree_nodes kategori di Supabase jika belum ada
+    try:
         res = sb.table("tree_nodes").select("nama, metadata") \
             .eq("client_id", CLIENT_ID) \
             .eq("tree_type", "kategori") \
