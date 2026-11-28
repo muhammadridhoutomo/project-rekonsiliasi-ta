@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8">
+<title>Daftar Kategori NLP &amp; Treatment Posting API ERP - SIREKON</title>
+<style>
+  @page { size: A4; margin: 14mm 13mm; }
+  body { font-family: "Segoe UI", Arial, sans-serif; font-size: 9.2pt; line-height: 1.4; color: #1d1d1f; }
+  h1 { font-size: 14pt; color: #1a3373; margin: 0 0 2px 0; }
+  .sub { font-size: 9pt; color: #444; border-bottom: 2px solid #1a3373; padding-bottom: 5px; margin-bottom: 10px; }
+  h2 { font-size: 10.5pt; color: #1a3373; margin: 12px 0 5px 0; page-break-after: avoid; }
+  p, ul, ol { margin: 4px 0 6px 0; }
+  ul, ol { padding-left: 18px; }
+  li { margin: 2px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 6px 0 10px 0; font-size: 8.3pt; }
+  th, td { border: 1px solid #666; padding: 3.5px 5px; text-align: left; vertical-align: top; }
+  th { background: #e6ebf5; font-weight: bold; }
+  tr { page-break-inside: avoid; }
+  code { background: #f2f2f2; padding: 0 3px; border-radius: 2px; font-size: 8.1pt; }
+  .box { border-left: 4px solid #1a3373; background: #eef3fb; padding: 6px 10px; margin: 8px 0; font-size: 8.8pt; page-break-inside: avoid; }
+</style></head><body>
+
+<h1>DAFTAR KATEGORI NLP &amp; USULAN TREATMENT POSTING API ERP</h1>
+<div class="sub">Proyek Tugas Akhir Sistem Rekonsiliasi Keuangan (SIREKON) — Tim ITS (Abror, Mario, Arya) &middot; Tindak Lanjut Arahan Pak Deptha</div>
+
+<p>Sesuai arahan Pak Deptha pada pertemuan 23 November 2026, berikut kami sampaikan <b>daftar lengkap 21 kategori NLP</b> yang diregistrasikan pada sistem SIREKON beserta <b>usulan pemetaan API &amp; treatment posting balik ke ERP Avolut</b> untuk diselaraskan bersama Pak Tegar.</p>
+
+<h2>1. Ringkasan 5 Pola Treatment Posting ke ERP</h2>
+<div class="box">
+<ol>
+  <li><b>Customer (<code>RECEIVABLE_CUSTOMER</code>):</b> Lookup API <i>Business Partner (Customer)</i> + <i>Open Invoice AR</i> &rarr; Push <b>Incoming Payment</b>.</li>
+  <li><b>Vendor (<code>PAYABLE_VENDOR</code>):</b> Lookup API <i>Business Partner (Vendor)</i> + <i>Open Invoice AP</i> &rarr; Push <b>Outgoing Payment</b>.</li>
+  <li><b>Intercompany / Transfer Internal (<code>INTERNAL_TRANSFER</code>, <code>CASH_DEPOSIT</code>, <code>LOAN</code>):</b> Mohon konfirmasi apakah tersedia endpoint <i>Intercompany/Bank Transfer</i> atau tetap menggunakan Incoming/Outgoing Payment melawan <i>Charge</i> perantara.</li>
+  <li><b>Kas Kecil / Reimburse (<code>PETTY_CASH</code>):</b> Mohon konfirmasi apakah lookup ke <i>Business Partner (Employee)</i> atau langsung menggunakan <i>Charge</i> kas kecil.</li>
+  <li><b>Biaya &amp; Pendapatan Langsung (15 kategori lainnya):</b> Lookup API <b>Charges</b> berdasarkan kode akun CoA &rarr; Push <b>Outgoing Payment</b> (Debit) atau <b>Incoming Payment</b> (Kredit).</li>
+</ol>
+</div>
+
+<h2>2. Daftar Lengkap 21 Kategori NLP &amp; Pemetaan ke ERP</h2>
+<table>
+<tr>
+  <th style="width:20px">No</th>
+  <th style="width:128px">Kode Label NLP</th>
+  <th style="width:125px">Nama Kategori</th>
+  <th style="width:40px">Arah</th>
+  <th style="width:72px">Kelompok CoA</th>
+  <th style="width:135px">API ERP (Lookup)</th>
+  <th>Treatment Posting ke ERP (Push)</th>
+</tr>
+<tr><td>1</td><td><code>RECEIVABLE_CUSTOMER</code></td><td>Penerimaan Customer (Piutang)</td><td>CR</td><td>1.1.04</td><td>Business Partner (Customer) + Open Invoice AR</td><td><b>Incoming Payment</b> (vs Customer / Invoice)</td></tr>
+<tr><td>2</td><td><code>PAYABLE_VENDOR</code></td><td>Pembayaran Supplier / Vendor</td><td>DB</td><td>2.1.01</td><td>Business Partner (Vendor) + Open Invoice AP</td><td><b>Outgoing Payment</b> (vs Vendor / Invoice)</td></tr>
+<tr><td>3</td><td><code>INTERNAL_TRANSFER</code></td><td>Transfer Rekening Sendiri / Intercompany (MCM same company)</td><td>CR/DB</td><td>1.1.02.98</td><td>Bank / Intercompany Account</td><td><b>Intercompany / Bank Transfer</b> <i>(konfirmasi)</i></td></tr>
+<tr><td>4</td><td><code>LOAN</code></td><td>Pinjaman &amp; Return Loan Interco</td><td>CR/DB</td><td>2.2.01, 1.1.04.02</td><td>Business Partner (Interco) / Charges</td><td><b>Incoming / Outgoing Payment</b> (vs Charge Loan)</td></tr>
+<tr><td>5</td><td><code>BANK_CHARGE</code></td><td>Biaya Bank (admin, transfer, tolakan)</td><td>DB</td><td><i>(konfirmasi)</i></td><td>Charges (sesuai kode akun)</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>6</td><td><code>BANK_INTEREST</code></td><td>Bunga Bank / Jasa Giro &amp; Pajak Bunga</td><td>CR/DB</td><td><i>(konfirmasi)</i></td><td>Charges (sesuai kode akun)</td><td><b>Incoming</b> (CR) / <b>Outgoing</b> (DB) vs Charge</td></tr>
+<tr><td>7</td><td><code>TAX</code></td><td>Pajak &amp; Setoran Negara (PPN, PPh)</td><td>DB</td><td>2.1.04–05, 1.1.08</td><td>Charges (akun pajak)</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>8</td><td><code>SALARY</code></td><td>Gaji, Lembur &amp; THR Karyawan</td><td>DB</td><td>6.2.01, 7.1.01</td><td>Charges / Employee</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>9</td><td><code>EMP_BENEFIT</code></td><td>Tunjangan Karyawan &amp; BPJS</td><td>DB</td><td>6.2.02, 7.1.02</td><td>Charges (akun 6.2.02.01)</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>10</td><td><code>UTILITIES</code></td><td>Listrik (PLN), Air (PDAM) &amp; Gas</td><td>DB</td><td>6.2.05, 7.1.05</td><td>Charges</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>11</td><td><code>COMMUNICATION</code></td><td>Telepon, Internet &amp; Pulsa</td><td>DB</td><td>6.2.06, 7.1.06</td><td>Charges</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>12</td><td><code>TRANSPORT</code></td><td>Transport &amp; BBM Operasional</td><td>DB</td><td>6.2.04, 7.1.04</td><td>Charges</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>13</td><td><code>OFFICE_GENERAL</code></td><td>ATK, Konsumsi &amp; Kebersihan</td><td>DB</td><td>6.2.07–08, 7.1.07–08</td><td>Charges</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>14</td><td><code>OTHER_EXPENSE</code></td><td>Biaya Lain-lain (donasi, dll.)</td><td>DB</td><td>6.4.01, 7.3.01</td><td>Charges</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>15</td><td><code>PETTY_CASH</code></td><td>Kas Kecil, Uang Muka &amp; Reimburse</td><td>CR/DB</td><td>1.1.1.97, 1.1.09.03</td><td>Business Partner (Employee) / Charges</td><td><b>Outgoing / Incoming Payment</b> (vs Employee / Charge)</td></tr>
+<tr><td>16</td><td><code>REVENUE_OTHER</code></td><td>Pendapatan Jasa / Lain-lain</td><td>CR</td><td>4.1.01</td><td>Charges (Pendapatan Lain)</td><td><b>Incoming Payment</b> (vs Charge)</td></tr>
+<tr><td>17</td><td><code>CASH_DEPOSIT</code></td><td>Setoran Tunai ke Bank</td><td>CR</td><td>1.1.1.01</td><td>Bank / Cash Account</td><td><b>Incoming Payment / Bank Transfer</b></td></tr>
+<tr><td>18</td><td><code>TRAVEL</code>*</td><td>Perjalanan Dinas</td><td>DB</td><td>6.2.03, 7.1.03</td><td>Charges</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>19</td><td><code>INSURANCE</code>*</td><td>Asuransi (non-BPJS)</td><td>DB</td><td>6.2.09, 7.1.09</td><td>Charges</td><td><b>Outgoing Payment</b> (vs Charge)</td></tr>
+<tr><td>20</td><td><code>RENT</code>*</td><td>Sewa (gedung, kendaraan, alat)</td><td>DB</td><td>6.2.10–14, 7.1.10–14</td><td>Charges / Vendor</td><td><b>Outgoing Payment</b> (vs Charge / Vendor)</td></tr>
+<tr><td>21</td><td><code>REPAIR_MAINT</code>*</td><td>Perbaikan &amp; Pemeliharaan</td><td>DB</td><td>6.2.15, 7.1.15</td><td>Charges / Vendor</td><td><b>Outgoing Payment</b> (vs Charge / Vendor)</td></tr>
+</table>
+<p style="font-size:8pt;color:#555;margin-top:-4px">*Catatan: Kategori 1–17 sudah aktif di model awal; kategori 18–21 sudah terdaftar di sistem dan aktif otomatis melalui mekanisme <i>feedback learning</i> saat dikoreksi pengguna.</p>
+
+<h2>3. Kebutuhan Teknis Integrasi API Sandbox ERP (untuk Diskusi dengan Pak Tegar)</h2>
+<ul>
+  <li><b>Kredensial Sandbox:</b> Base URL API Sandbox ERP Avolut serta API Key / Token otentikasi.</li>
+  <li><b>Endpoint GET (Lookup):</b> Business Partner (Customer, Vendor, Employee), Open Invoice (AR/AP), Daftar Charges + pemetaan ke kode akun CoA (khususnya untuk <code>BANK_CHARGE</code> dan <code>BANK_INTEREST</code>).</li>
+  <li><b>Endpoint POST (Push):</b> Dokumentasi payload untuk <b>Incoming Payment</b>, <b>Outgoing Payment</b>, serta <b>Intercompany/Bank Transfer</b> (jika terpisah).</li>
+</ul>
+
+</body></html>

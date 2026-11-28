@@ -76,8 +76,8 @@ LABEL_COA = {
     "TAX":            {"nama": "Pajak & Setoran Negara", "arah": "keluar",
                        "coa": ["2.1.04", "2.1.05", "1.1.08"]},
     "BANK_CHARGE":    {"nama": "Biaya Bank (admin, transfer, tolakan)", "arah": "keluar",
-                       "coa": [],   # BELUM ADA di CoA -> tanyakan ke Pak Depta
-                       "catatan": "Tidak ada akun biaya bank di CoA yang diterima"},
+                       "coa": ["8.2.00.08"],
+                       "catatan": "Terkonfirmasi Avolut (27 Nov 2026): B_EXPENSE / Charge ID 1000013"},
 
     # ----- ARUS MASUK -----
     "RECEIVABLE_CUSTOMER": {"nama": "Penerimaan dari Customer (Piutang)", "arah": "masuk",
@@ -95,9 +95,130 @@ LABEL_COA = {
     "INTERNAL_TRANSFER": {"nama": "Transfer Antar Rekening Sendiri", "arah": "dua_arah",
                           "coa": ["1.1.02.98"]},
     "BANK_INTEREST":     {"nama": "Bunga & Pajak Bunga Bank", "arah": "dua_arah",
-                          "coa": [],   # BELUM ADA di CoA -> tanyakan ke Pak Depta
-                          "catatan": "Tidak ada akun pendapatan bunga di CoA yang diterima"},
+                          "coa": ["8.2.00.10", "1.1.08.08"],
+                          "catatan": "Terkonfirmasi Avolut (27 Nov 2026): CR=8.2.00.10 (1000014), DB=1.1.08.08 (1000015)"},
 }
+
+# ---------------------------------------------------------------------
+# 2B. PEMETAAN FINAL 21 KATEGORI NLP -> OBJEK ERP iDEMPIERE 13 (AVOLUT, 27 NOV 2026)
+# Sandbox: dev-recon.midsuit.com (AD_Org_ID=1000015, BP Default Charge=1000079 SW-INTERNAL)
+# C_DocType_ID: 1000008 = AR Receipt (CR), 1000009 = AP Payment (DB)
+# ---------------------------------------------------------------------
+ERP_CONSTANTS = {
+    "client_id": 1000015,
+    "org_id": 1000015,
+    "role_id": 1000040,
+    "currency_idr_id": 303,
+    "doctype_ar_receipt": 1000008,
+    "doctype_ap_payment": 1000009,
+    "bpartner_internal_id": 1000079,  # SW-INTERNAL
+    "bank_accounts": {
+        "bca": {"id": 1000002, "tender_type": "A", "akun": "1.1.02.02"},
+        "mandiri": {"id": 1000003, "tender_type": "A", "akun": "8.2.00.49"},
+        "kas": {"id": 1000001, "tender_type": "X", "akun": "8.2.00.49"},
+    },
+}
+
+ERP_MAPPING_IDEMPIERE = {
+    "RECEIVABLE_CUSTOMER": {
+        "pola": "customer_invoice",
+        "charge_fallback": {"name": "RECEIVABLE_CUSTOMER_UNAPPLIED", "id": 1000009, "akun": "1.1.05.01"},
+        "akun_default": "1.1.04",
+    },
+    "PAYABLE_VENDOR": {
+        "pola": "vendor_invoice",
+        "charge_fallback": None,
+        "akun_default": "2.1.01",
+    },
+    "INTERNAL_TRANSFER": {
+        "pola": "bank_transfer_or_charge",
+        "charge_cr": {"name": "INTERNAL_TRANSFER", "id": 1000010, "akun": "1.1.02.98"},
+        "charge_db": {"name": "INTERNAL_TRANSFER", "id": 1000010, "akun": "1.1.02.98"},
+    },
+    "LOAN": {
+        "pola": "charge",
+        "charge_cr": {"name": "LOAN", "id": 1000011, "akun": "2.2.01.03"},
+        "charge_db": {"name": "LOAN_INTERCO_RETURN", "id": 1000012, "akun": "1.1.04.02"},
+    },
+    "BANK_CHARGE": {
+        "pola": "charge",
+        "charge_db": {"name": "BANK_CHARGE", "id": 1000013, "akun": "8.2.00.08"},
+    },
+    "BANK_INTEREST": {
+        "pola": "charge",
+        "charge_cr": {"name": "BANK_INTEREST", "id": 1000014, "akun": "8.2.00.10"},
+        "charge_db": {"name": "BANK_INTEREST_TAX", "id": 1000015, "akun": "1.1.08.08"},
+    },
+    "TAX": {
+        "pola": "charge_tax",
+        "charge_db": {"name": "TAX_PPN", "id": 1000016, "akun": "2.1.05.01"},
+        "varian": {
+            "ppn": {"name": "TAX_PPN", "id": 1000016, "akun": "2.1.05.01"},
+            "pph21": {"name": "TAX_PPH21", "id": 1000017, "akun": "2.1.04.01"},
+            "pph23": {"name": "TAX_PPH23", "id": 1000018, "akun": "2.1.04.04"},
+            "pph4_2": {"name": "TAX_PPH4_2", "id": 1000019, "akun": "2.1.04.06"},
+            "pph25": {"name": "TAX_PPH25", "id": 1000020, "akun": "1.1.08.07"},
+        },
+    },
+    "SALARY":         {"pola": "charge", "charge_db": {"name": "SALARY", "id": 1000021, "akun": "7.1.01.01"}},
+    "EMP_BENEFIT":    {"pola": "charge", "charge_db": {"name": "EMP_BENEFIT", "id": 1000022, "akun": "7.1.02.01"}},
+    "UTILITIES":      {"pola": "charge", "charge_db": {"name": "UTILITIES", "id": 1000023, "akun": "7.1.05.01"}},
+    "COMMUNICATION":  {"pola": "charge", "charge_db": {"name": "COMMUNICATION", "id": 1000024, "akun": "7.1.06.01"}},
+    "TRANSPORT":      {"pola": "charge", "charge_db": {"name": "TRANSPORT", "id": 1000025, "akun": "7.1.04.01"}},
+    "OFFICE_GENERAL": {"pola": "charge", "charge_db": {"name": "OFFICE_GENERAL", "id": 1000026, "akun": "7.1.07.03"}},
+    "OTHER_EXPENSE":  {"pola": "charge", "charge_db": {"name": "OTHER_EXPENSE", "id": 1000027, "akun": "7.3.01.08"}},
+    "PETTY_CASH": {
+        "pola": "petty_cash_or_employee",
+        "charge_db": {"name": "PETTY_CASH", "id": 1000028, "akun": "1.1.1.97"},
+        "charge_cr": {"name": "PETTY_CASH", "id": 1000028, "akun": "1.1.1.97"},
+        "charge_employee": {"name": "EMP_ADVANCE", "id": 1000029, "akun": "1.1.09.03"},
+    },
+    "REVENUE_OTHER":  {"pola": "charge", "charge_cr": {"name": "REVENUE_OTHER", "id": 1000030, "akun": "4.1.01.08"}},
+    "CASH_DEPOSIT": {
+        "pola": "bank_transfer_or_charge",
+        "charge_cr": {"name": "CASH_DEPOSIT", "id": 1000031, "akun": "1.1.1.99"},
+    },
+    "TRAVEL":         {"pola": "charge", "charge_db": {"name": "TRAVEL", "id": 1000032, "akun": "7.1.03.01"}},
+    "INSURANCE":      {"pola": "charge", "charge_db": {"name": "INSURANCE", "id": 1000033, "akun": "7.1.09.01"}},
+    "RENT":           {"pola": "charge_or_vendor", "charge_db": {"name": "RENT", "id": 1000034, "akun": "7.1.10.01"}},
+    "REPAIR_MAINT":   {"pola": "charge_or_vendor", "charge_db": {"name": "REPAIR_MAINT", "id": 1000035, "akun": "7.1.15.06"}},
+}
+
+
+def resolve_erp_target(label, jenis, keterangan=""):
+    """Menentukan metadata posting ERP iDempiere (C_DocType_ID, C_Charge_ID, akun CoA, pola)."""
+    jenis = str(jenis).upper()
+    doc_type_id = ERP_CONSTANTS["doctype_ar_receipt"] if jenis == "CR" else ERP_CONSTANTS["doctype_ap_payment"]
+    spec = ERP_MAPPING_IDEMPIERE.get(label, {})
+    pola = spec.get("pola", "charge")
+    ket_low = str(keterangan).lower()
+
+    charge = None
+    if label == "TAX":
+        varian = spec.get("varian", {})
+        if "pph 21" in ket_low or "pph21" in ket_low:
+            charge = varian["pph21"]
+        elif "pph 23" in ket_low or "pph23" in ket_low:
+            charge = varian["pph23"]
+        elif "pph 4" in ket_low or "pph4" in ket_low or "final" in ket_low:
+            charge = varian["pph4_2"]
+        elif "pph 25" in ket_low or "pph25" in ket_low:
+            charge = varian["pph25"]
+        else:
+            charge = varian["ppn"]
+    elif label == "PETTY_CASH" and any(k in ket_low for k in ("rembes", "reimburse", "kasbon", "uang muka")):
+        charge = spec.get("charge_employee")
+    else:
+        charge = spec.get("charge_cr" if jenis == "CR" else "charge_db") or spec.get("charge_db") or spec.get("charge_cr") or spec.get("charge_fallback")
+
+    return {
+        "pola_posting": pola,
+        "c_doctype_id": doc_type_id,
+        "c_charge_id": charge["id"] if charge else None,
+        "charge_name": charge["name"] if charge else None,
+        "akun_coa": charge["akun"] if charge else spec.get("akun_default"),
+        "default_bpartner_id": ERP_CONSTANTS["bpartner_internal_id"] if pola not in ("customer_invoice", "vendor_invoice") else None,
+    }
 
 LABEL_BELUM_PASTI = "PERLU_REVIEW"   # baris yang aturannya belum bisa memutuskan
 

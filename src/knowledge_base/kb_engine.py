@@ -36,6 +36,18 @@ except ImportError:
         except ImportError:
             erp_client = None
 
+try:
+    from knowledge_base.erp_idempiere import CHARGE_MAP, BANK_ACCOUNT_MAP
+except ImportError:
+    try:
+        from src.knowledge_base.erp_idempiere import CHARGE_MAP, BANK_ACCOUNT_MAP
+    except ImportError:
+        try:
+            from erp_idempiere import CHARGE_MAP, BANK_ACCOUNT_MAP
+        except ImportError:
+            CHARGE_MAP = {}
+            BANK_ACCOUNT_MAP = {}
+
 
 CACHE_TTL = 300  # 5 menit
 
@@ -539,6 +551,53 @@ class KBEngine:
             if n["kode_akun"] == kode_akun:
                 return n["nama"]
         return _KATEGORI_HARDCODED.get(kode_akun, {}).get("nama", kode_akun)
+
+    def prepare_erp_posting(self, klasifikasi_result: dict, bank: str = "BCA") -> Optional[dict]:
+        """
+        Siapkan payload untuk posting ke iDempiere berdasarkan hasil klasifikasi.
+
+        Return dict dengan field siap kirim, atau None jika tidak bisa di-post.
+        """
+        status = klasifikasi_result.get("status")
+        if status not in ("KB_TEREALISASI", "NLP_VALIDATED"):
+            return None
+
+        kode_akun = klasifikasi_result.get("kode_akun", "")
+        if not kode_akun or kode_akun in ("UNKNOWN", "PERLU_REVIEW"):
+            return None
+
+        jenis = klasifikasi_result.get("jenis")
+        mutasi = klasifikasi_result.get("mutasi") or 0
+        is_receipt = jenis == "CR"
+
+        bank_account_id = BANK_ACCOUNT_MAP.get(bank.upper())
+        if not bank_account_id:
+            return None
+
+        # Cek apakah ada invoice match
+        invoice_id = klasifikasi_result.get("invoice_id")
+
+        # Resolve charge dari NLP label (jika ada di metode)
+        charge_id = None
+        for label, cid in CHARGE_MAP.items():
+            if label.lower() in klasifikasi_result.get("metode", "").lower():
+                charge_id = cid
+                break
+
+        # Jangan isi charge dan invoice bersamaan
+        if invoice_id and charge_id:
+            charge_id = None
+
+        return {
+            "is_receipt": is_receipt,
+            "amount": abs(float(mutasi)),
+            "bank_account_id": bank_account_id,
+            "charge_id": charge_id,
+            "invoice_id": invoice_id,
+            "description": klasifikasi_result.get("teks_input", "")[:200],
+            "kode_akun": kode_akun,
+            "metode": klasifikasi_result.get("metode"),
+        }
 
     def invalidate_cache(self):
         """Force reload dari database pada klasifikasi berikutnya."""

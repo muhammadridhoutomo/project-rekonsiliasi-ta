@@ -1,0 +1,57 @@
+digraph "KB Tree: Kategori" {
+	graph [bgcolor=white dpi=150 fontcolor="#2E7D32" fontname=Arial fontsize=18 label="Knowledge Base — Tree Kategori" labelloc=t nodesep=0.4 rankdir=TB ranksep=0.6]
+	node [color="#2E7D32" fillcolor="#E8F5E9" fontcolor="#1B5E20" fontname=Arial fontsize=10 shape=box style="rounded,filled"]
+	edge [arrowsize=0.7 color="#2E7D32"]
+	"5a74aa86-1876-474c-af52-bb692abe7db2" [label=Expense fillcolor="#2E7D32" fontcolor=white fontsize=12 shape=ellipse style=filled]
+	"9ccee5cb-78fc-44df-a161-5f6879406904" [label="BPJS & Jaminan Sosial"]
+	"5a74aa86-1876-474c-af52-bb692abe7db2" -> "9ccee5cb-78fc-44df-a161-5f6879406904"
+	"11e44683-f5fc-4e2f-a43b-b30eb16a842b" [label="BPJS (PERLU_REVIEW)\n⚠ PERLU REVIEW"]
+	"9ccee5cb-78fc-44df-a161-5f6879406904" -> "11e44683-f5fc-4e2f-a43b-b30eb16a842b"
+	"0e3d27b3-184f-4b69-ab14-ed7964151f01" [label="Biaya Operasional"]
+	"5a74aa86-1876-474c-af52-bb692abe7db2" -> "0e3d27b3-184f-4b69-ab14-ed7964151f01"
+	"c8bdf7cc-75d1-449b-b3ba-c3cbdf670d9f" [label="Transport-Transport Out\nCoA: 6.2.04.01"]
+	"0e3d27b3-184f-4b69-ab14-ed7964151f01" -> "c8bdf7cc-75d1-449b-b3ba-c3cbdf670d9f"
+	"7f2f62dd-f024-462e-bef2-20fffe7774b0" [label="Salary & Wages-Base Salary\nCoA: 6.2.01.01"]
+	"0e3d27b3-184f-4b69-ab14-ed7964151f01" -> "7f2f62dd-f024-462e-bef2-20fffe7774b0"
+	"8d379e6e-69ff-4e46-8178-23a1e4e6a30f" [label="Utilities-Electricity (PLN)\nCoA: 6.2.05.01"]
+	"0e3d27b3-184f-4b69-ab14-ed7964151f01" -> "8d379e6e-69ff-4e46-8178-23a1e4e6a30f"
+	"ada96ff1-fbb6-4cfc-82b2-ea43a062ccf8" [label="Utilities-Water/Telephone\nCoA: 6.2.05.02"]
+	"0e3d27b3-184f-4b69-ab14-ed7964151f01" -> "ada96ff1-fbb6-4cfc-82b2-ea43a062ccf8"
+	"f207de9e-1864-430e-889a-d9862c9a6613" [label="Perpajakan & Pajak Negara"]
+	"5a74aa86-1876-474c-af52-bb692abe7db2" -> "f207de9e-1864-430e-889a-d9862c9a6613"
+	"ffdc0830-731a-41f2-ad06-fa5d99becb20" [label="Pajak (PERLU_REVIEW)\n⚠ PERLU REVIEW"]
+	"f207de9e-1864-430e-889a-d9862c9a6613" -> "ffdc0830-731a-41f2-ad06-fa5d99becb20"
+	"362004fd-f5cd-4ea8-bdef-7041f3b0589e" [label="Biaya Perbankan"]
+	"5a74aa86-1876-474c-af52-bb692abe7db2" -> "362004fd-f5cd-4ea8-bdef-7041f3b0589e"
+	"c9f09993-5ad9-4d78-be1e-9eab70a24911" [label="Biaya Admin Bank (PERLU_REVIEW)\n⚠ PERLU REVIEW"]
+	"362004fd-f5cd-4ea8-bdef-7041f3b0589e" -> "c9f09993-5ad9-4d78-be1e-9eab70a24911"
+	"76e9717f-b7cf-4d46-99f0-a5b2416bfad5" [label="Bunga Bank/Jasa Giro (PERLU_REVIEW)\n⚠ PERLU REVIEW"]
+	"362004fd-f5cd-4ea8-bdef-7041f3b0589e" -> "76e9717f-b7cf-4d46-99f0-a5b2416bfad5"
+	"b3b77f3e-d685-4cb7-b963-88ddc171a143" [label="Biaya Tolakan (PERLU_REVIEW)\n⚠ PERLU REVIEW"]
+	"362004fd-f5cd-4ea8-bdef-7041f3b0589e" -> "b3b77f3e-d685-4cb7-b963-88ddc171a143"
+	"5745e823-ba21-45d0-bb25-b89bec3df5bd" [label="Pendapatan/Biaya Sewa"]
+	"5a74aa86-1876-474c-af52-bb692abe7db2" -> "5745e823-ba21-45d0-bb25-b89bec3df5bd"
+	"3f572fa0-941b-426f-81df-4b6eaa3d5338" [label="Pendapatan Sewa (PERLU_REVIEW)\n⚠ PERLU REVIEW"]
+	"5745e823-ba21-45d0-bb25-b89bec3df5bd" -> "3f572fa0-941b-426f-81df-4b6eaa3d5338"
+	"261cd32b-4bc5-4226-97d0-d7f6703f4739" [label="Biaya Sewa (PERLU_REVIEW)\n⚠ PERLU REVIEW"]
+	"5745e823-ba21-45d0-bb25-b89bec3df5bd" -> "261cd32b-4bc5-4226-97d0-d7f6703f4739"
+	"5add9d30-3452-4579-b10a-817c49e1bbb3" [label="Switching/Transfer Antar Bank"]
+	"5a74aa86-1876-474c-af52-bb692abe7db2" -> "5add9d30-3452-4579-b10a-817c49e1bbb3"
+	"3815a18a-8630-4ff4-8050-ac808899d0de" [label="Cross Account Bank (keluar)\nCoA: 1.1.02.98"]
+	"5add9d30-3452-4579-b10a-817c49e1bbb3" -> "3815a18a-8630-4ff4-8050-ac808899d0de"
+	"115101c8-e642-4133-a007-93752ff454d4" [label="Setoran Tunai"]
+	"5a74aa86-1876-474c-af52-bb692abe7db2" -> "115101c8-e642-4133-a007-93752ff454d4"
+	"8da4cc60-1555-442c-9a8a-84ebe567651c" [label="Cash on Hand IDR\nCoA: 1.1.1.01"]
+	"115101c8-e642-4133-a007-93752ff454d4" -> "8da4cc60-1555-442c-9a8a-84ebe567651c"
+	"75b253ab-a6f5-4e61-94e5-cfc5868f8842" [label="Pembayaran Vendor"]
+	"5a74aa86-1876-474c-af52-bb692abe7db2" -> "75b253ab-a6f5-4e61-94e5-cfc5868f8842"
+	"f5813edc-7ef7-471e-8aad-07aef8a71b6a" [label="Trade Payable - 3rd Party\nCoA: 2.1.01.01"]
+	"75b253ab-a6f5-4e61-94e5-cfc5868f8842" -> "f5813edc-7ef7-471e-8aad-07aef8a71b6a"
+	"d876f0de-08d5-43f2-8a7a-644724a13c25" [label=Income fillcolor="#2E7D32" fontcolor=white fontsize=12 shape=ellipse style=filled]
+	"1a2a9884-c4dc-4191-81b7-27e3739cc9bb" [label="Penerimaan Customer"]
+	"d876f0de-08d5-43f2-8a7a-644724a13c25" -> "1a2a9884-c4dc-4191-81b7-27e3739cc9bb"
+	"373cb7f8-4f3a-4669-a447-dfeb1c1b873a" [label="Account Receivable 3rd Party\nCoA: 1.1.04.01"]
+	"1a2a9884-c4dc-4191-81b7-27e3739cc9bb" -> "373cb7f8-4f3a-4669-a447-dfeb1c1b873a"
+	"0a013b7c-e598-4ee1-b23c-749014458f52" [label="Cross Account Bank (masuk)\nCoA: 1.1.02.98"]
+	"d876f0de-08d5-43f2-8a7a-644724a13c25" -> "0a013b7c-e598-4ee1-b23c-749014458f52"
+}

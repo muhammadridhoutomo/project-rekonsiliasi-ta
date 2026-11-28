@@ -39,7 +39,7 @@ import sys
 
 from feedback_learning import catat_koreksi, latih_ulang_dengan_feedback, peta_memori_koreksi
 from kamus_istilah import normalisasi_teks
-from kategori_keuangan import LABEL_COA
+from kategori_keuangan import LABEL_COA, resolve_erp_target
 from routing import klasifikasi_transaksi, load_model
 
 _CACHE_MODEL = None
@@ -129,6 +129,7 @@ def proses(transaksi, model=None, threshold=None):
             "confidence": h["confidence"],
             "sumber_label": h["sumber_label"],
             "status": h["status"],
+            "erp_target": resolve_erp_target(h["label"], jenis, ket),
         }
         hasil.append(item)
     return _bungkus(hasil, threshold)
@@ -180,6 +181,7 @@ def terapkan_koreksi(paket, koreksi, simpan_feedback=True, latih_ulang=True):
                 nama_akun=LABEL_COA[lab]["nama"],
                 status="OTOMATIS",
                 sumber_label="manual",
+                erp_target=resolve_erp_target(lab, h.get("jenis", "DB"), h.get("keterangan", "")),
             )
 
     if simpan_feedback and catatan:

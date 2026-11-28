@@ -18,10 +18,10 @@ COA_PATH = BASE_DIR / "data" / "CoA.xlsx"
 MAPPING_LAMA_KE_COA = {
     # Pajak — Tax Payable summary (2.1.05) ada, tapi posting hanya VAT-Out (2.1.05.01).
     # Setoran pajak PPh/PPN umum belum punya akun posting spesifik.
-    "6-7000": "PERLU_REVIEW",  # Pajak — perlu konfirmasi akun posting ke Pak Depta
+    "6-7000": "2.1.05.01",    # VAT Out (pajak/setoran negara)
 
-    # BPJS — tidak ada akun BPJS di CoA mitra. Kandidat: 2.1.06.01 (Accrued Expenses).
-    "6-6000": "PERLU_REVIEW",  # BPJS — akun belum ada di CoA mitra
+    # BPJS → Employee Benefit
+    "6-6000": "6.2.02.01",    # Employee Benefit (BPJS Ketenagakerjaan/Kesehatan)
 
     # Operasional — utilitas & gaji
     "6-2200": "6.2.05.01",    # Utilities-Electricity (PLN)
@@ -32,9 +32,9 @@ MAPPING_LAMA_KE_COA = {
     "6-3100": "6.2.04.01",    # Transport-Transport.Out (produksi)
 
     # Perbankan — tidak ada akun biaya bank, bunga, atau tolakan di CoA mitra
-    "6-1100": "PERLU_REVIEW",  # Biaya Admin Bank — akun belum ada
-    "6-8000": "PERLU_REVIEW",  # Biaya Tolakan — akun belum ada
-    "4-3000": "PERLU_REVIEW",  # Bunga Bank/Jasa Giro — akun belum ada
+    "6-1100": "8.2.00.08",    # Bank Charge (biaya admin bank)
+    "6-8000": "8.2.00.08",    # Bank Charge (biaya tolakan)
+    "4-3000": "8.2.00.10",    # Bank Interest (bunga bank/jasa giro)
 
     # Vendor & Customer (contra account / akun lawan)
     "6-5000": "2.1.01.01",    # Trade Payable - 3rd Party (bayar vendor)
@@ -53,27 +53,27 @@ MAPPING_LAMA_KE_COA = {
 # Mapping label baru Pool 2 (NLP berbasis CoA) -> Kode CoA riil spesifik
 # ---------------------------------------------------------------------------
 MAPPING_LABEL_NLP_KE_COA = {
-    "SALARY": "6.2.01.01",              # Salary & Wages-Base Salary (produksi)
-    "RECEIVABLE_CUSTOMER": "1.1.04.01",  # Account Receivable 3rd Party
-    "PAYABLE_VENDOR": "2.1.01.01",       # Trade Payable - 3rd Party
-    "UTILITIES": "6.2.05.01",           # Utilities-Electricity (PLN)
-    "COMMUNICATION": "6.2.05.02",       # Utilities-Water/Telephone
-    "TRANSPORT": "6.2.04.01",           # Transport-Transport Out (BBM)
+    "SALARY": "7.1.01.01",              # Salary & Wages (Operating Expenses)
+    "RECEIVABLE_CUSTOMER": "1.1.04.01",  # Account Receivable 3rd Party (invoice match)
+    "PAYABLE_VENDOR": "2.1.01.01",       # Trade Payable - 3rd Party (invoice match)
+    "UTILITIES": "7.1.05.01",           # Utilities (Operating Expenses)
+    "COMMUNICATION": "7.1.06.01",       # Communication (Operating Expenses)
+    "TRANSPORT": "7.1.04.01",           # Transport (Operating Expenses)
     "INTERNAL_TRANSFER": "1.1.02.98",   # Cross Account Bank
-    "CASH_DEPOSIT": "1.1.1.01",         # Cash on Hand IDR
-    "RENT": "6.2.10.01",                # Rent-Building
-    "LOAN": "2.2.01",                   # Long Term Loan
+    "CASH_DEPOSIT": "1.1.1.99",         # Cash Deposit (via charge)
+    "RENT": "7.1.10.01",               # Rent (Operating Expenses)
+    "LOAN": "2.2.01.03",               # Long Term Loan
     "PETTY_CASH": "1.1.1.97",           # Petty Cash
-    "REVENUE_OTHER": "4.1.01",          # Operating Revenue
-    "OFFICE_GENERAL": "6.2.07.01",      # Office Supplies
-    "REPAIR_MAINT": "6.2.15.01",        # Repair & Maintenance
-    "OTHER_EXPENSE": "6.4.01.01",       # Other Expenses
-    "TRAVEL": "6.2.03.01",              # Travel Expense
-    "INSURANCE": "6.2.09.01",           # Insurance Expense
-    "TAX": "PERLU_REVIEW",              # Pajak & Setoran Negara
-    "BANK_CHARGE": "PERLU_REVIEW",       # Biaya Bank (admin, transfer, tolakan)
-    "BANK_INTEREST": "PERLU_REVIEW",     # Bunga & Pajak Bunga Bank
-    "EMP_BENEFIT": "PERLU_REVIEW",       # Tunjangan Karyawan & BPJS
+    "REVENUE_OTHER": "4.1.01.08",       # Other Revenue
+    "OFFICE_GENERAL": "7.1.07.03",      # Office Supplies (Operating Expenses)
+    "REPAIR_MAINT": "7.1.15.06",        # Repair & Maintenance (Operating Expenses)
+    "OTHER_EXPENSE": "7.3.01.08",       # Other Expenses
+    "TRAVEL": "7.1.03.01",             # Travel Expense (Operating Expenses)
+    "INSURANCE": "7.1.09.01",          # Insurance (Operating Expenses)
+    "TAX": "2.1.05.01",                # VAT Out (PPN Keluaran)
+    "BANK_CHARGE": "8.2.00.08",        # Bank Charge
+    "BANK_INTEREST": "8.2.00.10",      # Bank Interest
+    "EMP_BENEFIT": "7.1.02.01",        # Employee Benefit (Operating Expenses)
 }
 
 # Akun bank per institusi (sisi bank dari jurnal)
